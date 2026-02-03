@@ -1,0 +1,183 @@
+# Diabetes Medical Knowledge
+
+## Types of Diabetes
+
+**Type 1 Diabetes (T1D):**
+Autoimmune destruction of insulin-producing beta cells in pancreas. Absolute insulin deficiency requiring lifelong insulin therapy. Represents 5-10% of all diabetes cases. Typically diagnosed in childhood or adolescence, though adult-onset occurs. Associated with other autoimmune conditions (Hashimoto's thyroiditis, Celiac disease). No known prevention.
+
+**Type 2 Diabetes (T2D):**
+Insulin resistance combined with progressive beta cell dysfunction. Represents 90-95% of cases. Strongly associated with obesity, sedentary lifestyle, metabolic syndrome, and genetic factors. Usually diagnosed in adults over 45, but increasing in younger populations. Can be prevented or delayed with lifestyle modifications.
+
+**Gestational Diabetes Mellitus (GDM):**
+Develops during second or third trimester of pregnancy. Caused by placental hormones inducing insulin resistance. Usually resolves after delivery but increases future T2D risk by 7-fold. Associated with fetal macrosomia and birth complications. Affects 2-10% of pregnancies.
+
+**Prediabetes:**
+Elevated blood glucose not meeting diabetes thresholds. HbA1C 5.7-6.4% or FPG 100-125 mg/dL. 70% of prediabetics will develop T2D without intervention. Reversible with lifestyle changes.
+
+## Symptoms and Clinical Presentation
+
+**Classic Triad:**
+- **Polyuria:** Excessive urination due to osmotic diuresis from glucosuria
+- **Polydipsia:** Excessive thirst from dehydration caused by polyuria  
+- **Polyphagia:** Excessive hunger from cellular inability to utilize glucose
+
+**Additional Symptoms:**
+- Unexplained weight loss (more common in T1D)
+- Fatigue and weakness from energy deficiency
+- Blurred vision from osmotic lens changes
+- Slow-healing wounds and frequent infections (impaired immunity)
+- Peripheral neuropathy: numbness, tingling, burning pain in extremities
+- Acanthosis nigricans: darkened skin patches in insulin-resistant patients
+- Recurrent yeast infections (candidiasis)
+
+**Asymptomatic Presentation:**
+Many T2D patients diagnosed incidentally during routine testing. Average delay between onset and diagnosis is 4-7 years.
+
+## Diagnostic Criteria
+
+**Fasting Plasma Glucose (FPG):**
+- Normal: <100 mg/dL (5.6 mmol/L)
+- Prediabetes: 100-125 mg/dL (5.6-6.9 mmol/L)
+- Diabetes: ≥126 mg/dL (7.0 mmol/L) on two separate occasions
+
+**HbA1C (Glycated Hemoglobin):**
+- Normal: <5.7%
+- Prediabetes: 5.7-6.4%
+- Diabetes: ≥6.5%
+- Reflects average glucose over 2-3 months
+
+**Oral Glucose Tolerance Test (OGTT):**
+- 75g glucose load after overnight fast
+- Diabetes: ≥200 mg/dL (11.1 mmol/L) at 2 hours
+- Prediabetes: 140-199 mg/dL (7.8-11.0 mmol/L)
+
+**Random Plasma Glucose:**
+≥200 mg/dL (11.1 mmol/L) with classic symptoms
+
+**Additional Testing:**
+- C-peptide: Assesses endogenous insulin production
+- Autoantibodies (GAD65, IA-2, ZnT8): Distinguishes T1D from T2D
+- Lipid profile: Cardiovascular risk assessment
+- Kidney function: Serum creatinine, eGFR
+- Urine albumin-to-creatinine ratio: Early nephropathy detection
+
+## Pharmacological Treatments
+
+**Insulin Therapy (Required for T1D, advanced T2D):**
+- **Rapid-acting:** Lispro (Humalog), Aspart (Novolog), Glulisine (Apidra) - onset 10-15 min, peak 1-2 hours
+- **Short-acting:** Regular insulin (Humulin R, Novolin R) - onset 30 min, peak 2-4 hours
+- **Intermediate-acting:** NPH insulin - onset 1-2 hours, peak 4-8 hours
+- **Long-acting:** Glargine (Lantus), Detemir (Levemir), Degludec (Tresiba) - onset 1-2 hours, minimal peak, duration 20-24+ hours
+
+**Oral Hypoglycemic Agents:**
+
+**Metformin (Biguanide):** First-line for T2D
+- Reduces hepatic glucose production
+- Improves peripheral insulin sensitivity
+- Weight-neutral, low hypoglycemia risk
+- Contraindications: eGFR <30, acute metabolic acidosis
+
+**Sulfonylureas:** Glipizide, Glyburide, Glimepiride
+- Stimulate pancreatic beta cell insulin release
+- Risk: Hypoglycemia, weight gain
+- Contraindications: Sulfa allergy
+
+**DPP-4 Inhibitors:** Sitagliptin (Januvia), Linagliptin (Tradjenta), Saxagliptin (Onglyza)
+- Enhance incretin hormone activity
+- Increase insulin, decrease glucagon (glucose-dependent)
+- Weight-neutral, low hypoglycemia risk
+- Side effects: Nasopharyngitis, rare pancreatitis
+
+**SGLT2 Inhibitors:** Empagliflozin (Jardiance), Dapagliflozin (Farxiga), Canagliflozin (Invokana)
+- Block glucose reabsorption in kidneys (promote glycosuria)
+- Benefits: Cardiovascular protection, weight loss, blood pressure reduction
+- Risks: Genitourinary infections, diabetic ketoacidosis (rare), volume depletion
+- Contraindications: Recurrent UTIs, severe renal impairment
+
+**GLP-1 Receptor Agonists:** Semaglutide (Ozempic), Liraglutide (Victoza), Dulaglutide (Trulicity)
+- Injectable medications (some oral formulations)
+- Enhance glucose-dependent insulin secretion, suppress glucagon, slow gastric emptying
+- Benefits: Significant weight loss (10-15%), cardiovascular protection
+- Contraindications: Personal/family history medullary thyroid carcinoma, MEN2
+
+**Thiazolidinediones:** Pioglitazone (Actos), Rosiglitazone (Avandia)
+- Improve insulin sensitivity in peripheral tissues
+- Side effects: Weight gain, fluid retention, increased fracture risk
+- Contraindications: Heart failure, bladder cancer history
+
+## Acute Complications
+
+**Diabetic Ketoacidosis (DKA):**
+Life-threatening emergency primarily in T1D. Severe insulin deficiency causes lipolysis and ketone production (acetoacetate, beta-hydroxybutyrate, acetone), leading to metabolic acidosis.
+- Presentation: Blood glucose >250 mg/dL, pH <7.3, bicarbonate <18 mEq/L, positive ketones
+- Symptoms: Kussmaul breathing (deep rapid respirations), fruity breath, altered mental status, abdominal pain, vomiting
+- Treatment: IV fluids (normal saline), IV insulin, electrolyte replacement (potassium, phosphate), treat precipitating cause (infection, missed insulin)
+- Mortality: 1-5% with treatment
+
+**Hyperosmolar Hyperglycemic State (HHS):**
+Severe complication primarily in T2D. Extreme hyperglycemia without significant ketosis causes profound osmotic diuresis and dehydration.
+- Presentation: Blood glucose >600 mg/dL, serum osmolality >320 mOsm/kg, severe dehydration (8-10L deficit)
+- Symptoms: Altered mental status or coma, absence of ketoacidosis
+- Treatment: Aggressive fluid resuscitation (more gradual than DKA), insulin after initial rehydration
+- Mortality: 10-20%
+
+**Hypoglycemia:**
+Blood glucose <70 mg/dL. Caused by insulin or sulfonylureas. Symptoms progress from autonomic (tremor, sweating, palpitations) to neuroglycopenic (confusion, seizures, coma).
+- Treatment: 15-20g fast-acting carbohydrates (glucose tablets, juice) for conscious patients
+- Severe: Glucagon injection (1mg IM) or IV dextrose for unconscious patients
+
+## Chronic Complications
+
+**Macrovascular Complications:**
+- **Cardiovascular Disease:** 2-4 fold increased risk. Coronary artery disease, myocardial infarction, stroke, peripheral arterial disease
+- **Prevention:** Aggressive blood pressure control (<130/80), statin therapy, antiplatelet agents, smoking cessation
+
+**Microvascular Complications:**
+
+**Diabetic Retinopathy:** Leading cause of blindness in working-age adults
+- **Stages:** Non-proliferative (microaneurysms, hemorrhages, hard exudates) → Proliferative (neovascularization, vitreous hemorrhage) → Diabetic macular edema
+- **Management:** Annual dilated eye exams, optimal glycemic control (every 1% HbA1C reduction decreases risk 35%), laser photocoagulation, anti-VEGF injections
+
+**Diabetic Nephropathy:** Leading cause of end-stage renal disease
+- **Stages:** Hyperfiltration → Microalbuminuria (30-300 mg/day) → Macroalbuminuria (>300 mg/day) → Declining GFR → ESRD requiring dialysis/transplantation
+- **Management:** ACE inhibitors or ARBs for renoprotection, blood pressure control, glycemic control, protein restriction in advanced disease
+
+**Diabetic Neuropathy:** Affects up to 50% of patients
+- **Peripheral Neuropathy:** Distal symmetric polyneuropathy causing numbness, tingling, burning pain. Loss of protective sensation increases foot ulcer risk.
+- **Autonomic Neuropathy:** Gastroparesis (delayed gastric emptying), cardiac autonomic neuropathy (resting tachycardia, orthostatic hypotension), bladder dysfunction, erectile dysfunction, gustatory sweating
+- **Management:** Optimal glycemic control, foot care education, neuropathic pain medications (gabapentin, pregabalin, duloxetine)
+
+**Diabetic Foot Disease:**
+Combination of neuropathy, peripheral arterial disease, and impaired immunity leads to:
+- Foot ulcers (15% lifetime risk), infections (cellulitis, osteomyelitis), gangrene
+- Diabetes accounts for 60% of non-traumatic lower-limb amputations
+- **Prevention:** Daily foot inspection, proper footwear, regular podiatric care, multidisciplinary foot care teams
+
+## Management Goals and Interventions
+
+**Glycemic Targets:**
+- HbA1C: <7% for most adults (individualize based on age, comorbidities, hypoglycemia risk)
+- Preprandial glucose: 80-130 mg/dL
+- Postprandial glucose: <180 mg/dL
+
+**Cardiovascular Risk Reduction:**
+- Blood pressure: <130/80 mmHg
+- LDL cholesterol: <100 mg/dL (<70 mg/dL if ASCVD present)
+- Triglycerides: <150 mg/dL
+- HDL cholesterol: >40 mg/dL (men), >50 mg/dL (women)
+- Aspirin therapy for secondary prevention
+
+**Lifestyle Interventions:**
+- **Medical Nutrition Therapy:** Carbohydrate counting, glycemic index awareness, portion control, balanced macronutrients, Mediterranean or DASH-style eating patterns
+- **Physical Activity:** Minimum 150 minutes/week moderate-intensity aerobic exercise plus resistance training 2-3 times/week
+- **Weight Management:** For overweight/obese T2D patients, 5-10% weight loss significantly improves glycemic control
+- **Smoking Cessation:** Critical for cardiovascular risk reduction
+- **Self-Monitoring:** Blood glucose monitoring, continuous glucose monitoring (CGM) for intensive insulin therapy
+
+**Preventive Care:**
+- Annual dilated eye examinations
+- Annual urine albumin-to-creatinine ratio and eGFR
+- Annual comprehensive foot examination
+- Annual influenza vaccination
+- Pneumococcal vaccination
+- Hepatitis B vaccination for adults 19-59 years

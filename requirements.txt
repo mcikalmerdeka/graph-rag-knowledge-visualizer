@@ -1,0 +1,9 @@
+dotenv>=0.9.9
+ipykernel>=6.30.1
+langchain>=1.2.8
+langchain-experimental>=0.4.1
+langchain-openai>=1.17
+matplotlib>=3.10.8
+python-dotenv>=1.2.1
+pyvis>=0.3.2
+streamlit>=1.53.1

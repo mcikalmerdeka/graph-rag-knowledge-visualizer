@@ -1,0 +1,116 @@
+# Automotive Supply Chain
+
+## Supply Chain Tiers
+
+**OEMs (Original Equipment Manufacturers):**
+Toyota, Ford, General Motors, Volkswagen, BMW, Tesla, Honda, Hyundai, Nissan, Stellantis
+
+**Tier 1 Suppliers - Direct OEM Partners:**
+- **Powertrain:** Bosch, Denso, Continental, ZF, BorgWarner, Aisin, Magna
+- **Brakes and Suspension:** Brembo, TRW (ZF), Tenneco, KYB, Hitachi
+- **Body and Interior:** Lear Corporation, Adient, Faurecia, Magna, Yanfeng
+- **Electronics:** Aptiv, Valeo, Harman (Samsung), Panasonic, Bosch
+- **Tires:** Michelin, Bridgestone, Goodyear, Continental
+
+**Tier 2 Suppliers - Component Manufacturers:**
+- **Semiconductors:** Infineon, NXP, STMicroelectronics, Texas Instruments, Renesas, ON Semiconductor
+- **Steel and Metals:** AK Steel, Nucor, ArcelorMittal, Novelis
+- **Plastics:** BASF, Dow, DuPont, Covestro
+- **Glass:** AGC, Saint-Gobain, Guardian Glass
+- **Cables:** Delphi, Yazaki, Sumitomo Electric
+
+**Tier 3 Suppliers - Raw Materials:**
+- **Mining:** Vale (iron ore), Rio Tinto (bauxite), Albemarle (lithium)
+- **Steel Mills:** Baowu Steel, ArcelorMittal, Nippon Steel
+- **Chemicals:** BASF, Dow, DuPont, LG Chem
+- **Petrochemicals:** ExxonMobil, Shell, Sinopec
+
+## Critical Materials and Components
+
+**Battery Electric Vehicle (BEV) Materials:**
+- **Lithium:** Battery cathodes from Australia (spodumene), Chile/Argentina (brine), China (processing)
+- **Cobalt:** Democratic Republic of Congo (70% global supply) for cathode stability
+- **Nickel:** Indonesia, Philippines, Russia for high-energy NMC/NCA cathodes
+- **Graphite:** Anodes from China (synthetic), Mozambique, Tanzania (natural)
+- **Rare Earth Elements:** Neodymium, praseodymium for motor magnets - China dominates 85% processing
+
+**Semiconductors:**
+- Modern vehicles contain 1,000-3,000 chips
+- Control systems: Powertrain, ADAS, infotainment, HVAC, lighting
+- Major suppliers: Nvidia (AI), Qualcomm (infotainment), Mobileye (ADAS)
+- Manufacturing: TSMC (Taiwan), Samsung (South Korea), Intel (USA)
+
+**Traditional Materials:**
+- **Steel:** 50-60% of vehicle weight, high-strength grades for safety
+- **Aluminum:** 30% lighter than steel, used for hoods, doors, wheels
+- **Plastics:** Bumpers, interior panels, under-hood components
+- **Rubber:** Tires, seals, hoses
+
+## Supply Chain Risks
+
+**Geographic Concentration Risks:**
+- **China:** 85% rare earth processing, 60% lithium processing, 75% battery cell production, 40% semiconductor assembly
+- **Taiwan:** TSMC produces 60% global semiconductors, 90% advanced chips
+- **Democratic Republic of Congo:** 70% global cobalt supply
+- **Ukraine:** Pre-war supplier of wiring harnesses and neon gas for chip manufacturing
+
+**Operational Models:**
+- **Just-In-Time (JIT):** Toyota pioneered system with 2-4 hour delivery windows
+- **Just-In-Sequence (JIS):** Components delivered in exact assembly order (seats, dashboards)
+- **Build-to-Order:** Custom configurations, 4-12 week lead times
+- **Build-to-Stock:** Forecast-driven production, immediate dealer availability
+
+**Vulnerability Factors:**
+- Single-source dependencies for specialized components
+- Long supplier qualification periods (12-24 months)
+- Limited inventory buffers due to JIT principles
+- Geopolitical tensions affecting trade flows
+- Natural disasters (2011 Japan earthquake disrupted global supply)
+
+## Quality Management Systems
+
+**IATF 16949 Standard:**
+- International automotive quality management system
+- Based on ISO 9001 with industry-specific requirements
+- Mandatory for all automotive suppliers
+- Covers: Process control, risk management, continuous improvement
+
+**Core Quality Tools:**
+- **APQP (Advanced Product Quality Planning):** 5-phase development process
+- **PPAP (Production Part Approval Process):** 18-element submission for approval
+- **FMEA (Failure Mode and Effects Analysis):** Risk assessment methodology
+- **SPC (Statistical Process Control):** Real-time quality monitoring
+- **MSA (Measurement System Analysis):** Gage calibration and capability
+
+**Supplier Scorecard Metrics:**
+- Quality: Parts per million (PPM) defect rate
+- Delivery: On-time delivery percentage
+- Cost: Price competitiveness and productivity
+- Responsiveness: Issue resolution speed
+- Innovation: Technology advancement proposals
+
+## Key Industry Challenges
+
+**Supply Chain Disruptions:**
+- 2021-2023 semiconductor shortage reduced global vehicle production by millions
+- COVID-19 pandemic exposed fragility of JIT systems
+- Russia-Ukraine war disrupted wiring harness and neon gas supplies
+- Increasing frequency of climate-related disruptions
+
+**Regulatory Pressures:**
+- **Environmental:** EU CBAM (carbon border adjustments), Extended Producer Responsibility
+- **Safety:** IATF 16949 compliance, product liability regulations
+- **Trade:** USMCA (North America), Brexit (UK-EU), US-China tariffs
+- **Conflict Minerals:** Dodd-Frank Act due diligence requirements
+
+**Technology Transition:**
+- Shift from internal combustion to electric vehicles requires new supplier base
+- Software-defined vehicles need electronics and software suppliers
+- Autonomous driving requires AI chips, sensors, LiDAR
+- Traditional powertrain suppliers face obsolescence risk
+
+**Cybersecurity:**
+- Connected vehicles vulnerable to cyber attacks
+- Ransomware attacks on suppliers halt production
+- Over-the-air updates require secure infrastructure
+- Supply chain attacks (SolarWinds-style) pose threats

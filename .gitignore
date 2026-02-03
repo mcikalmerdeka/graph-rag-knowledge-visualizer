@@ -1,0 +1,15 @@
+# Environment files
+.env
+.venv
+
+# Python cache files
+__pycache__/
+
+# Library generated files
+lib/
+
+# Temporary files
+temp/
+
+# Opencode config
+.opencode/
