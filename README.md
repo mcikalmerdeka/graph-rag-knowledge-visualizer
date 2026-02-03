@@ -2,6 +2,8 @@
 
 A powerful Python application that combines **Knowledge Graph Generation** with **Graph RAG (Retrieval-Augmented Generation)** to extract structured knowledge from unstructured text, visualize it as interactive graphs, and query it using natural language.
 
+Try the deployed application here: [Streamlit Cloud](https://graph-rag-knowledge-visualizer-quoqqdsdcqpqmu88qzzzda.streamlit.app/)
+
 ![Knowledge Graph Visualization](assets/image_header.png)
 
 _Interactive knowledge graph visualization with AI-powered Q&A capabilities_
