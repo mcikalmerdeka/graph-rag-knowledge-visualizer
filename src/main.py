@@ -15,6 +15,10 @@ import asyncio
 from pathlib import Path
 from typing import List, Optional, Union
 
+# Initialize logging at module import
+from src.config.logging_config import setup_logger, logger_app, logger_transformer, logger_rag, logger_visualizer
+setup_logger()
+
 from src.config.settings import settings
 from src.core.graph_transformer import GraphTransformer
 from src.core.visualization import GraphVisualizer
@@ -68,6 +72,8 @@ class KnowledgeGraphGenerator:
             schema: Graph schema for consistent extractions
             ignore_tool_usage: Force prompt-based extraction
         """
+        logger_app.info(f"Initializing KnowledgeGraphGenerator with model={model or settings.DEFAULT_LLM_MODEL}")
+        
         self.transformer = GraphTransformer(
             model=model,
             temperature=temperature,
@@ -75,6 +81,8 @@ class KnowledgeGraphGenerator:
             ignore_tool_usage=ignore_tool_usage,
         )
         self.visualizer = GraphVisualizer()
+        
+        logger_app.debug("KnowledgeGraphGenerator initialized successfully")
     
     async def generate(
         self,
@@ -93,19 +101,35 @@ class KnowledgeGraphGenerator:
         Returns:
             List of GraphDocument objects
         """
+        logger_transformer.info("Starting graph generation from text")
+        
         if isinstance(text, str):
+            text_length = len(text)
+            logger_transformer.debug(f"Processing single text input (length: {text_length})")
+            
             # Chunk long text if needed
             chunk_size = chunk_size or settings.DEFAULT_CHUNK_SIZE
             chunk_overlap = chunk_overlap or settings.DEFAULT_CHUNK_OVERLAP
             
-            if len(text) > chunk_size:
+            if text_length > chunk_size:
                 texts = chunk_text(text, chunk_size, chunk_overlap)
+                logger_transformer.info(f"Text chunked into {len(texts)} chunks (size={chunk_size}, overlap={chunk_overlap})")
             else:
                 texts = [text]
+                logger_transformer.debug("Text fits in single chunk, no chunking needed")
         else:
             texts = text
+            logger_transformer.info(f"Processing {len(texts)} text inputs")
         
-        return await self.transformer.extract_graph(texts)
+        try:
+            result = await self.transformer.extract_graph(texts)
+            total_nodes = sum(len(doc.nodes) for doc in result)
+            total_rels = sum(len(doc.relationships) for doc in result)
+            logger_transformer.info(f"Graph extraction completed: {len(result)} document(s), {total_nodes} total nodes, {total_rels} total relationships")
+            return result
+        except Exception as e:
+            logger_transformer.error(f"Graph extraction failed: {str(e)}", exc_info=True)
+            raise
     
     def generate_sync(
         self,
@@ -140,7 +164,17 @@ class KnowledgeGraphGenerator:
             output_file: Output file path (default: auto-generated)
             **kwargs: Additional arguments for visualizer
         """
-        return self.visualizer.visualize(graph_document, output_file, **kwargs)
+        num_nodes = len(graph_document.nodes)
+        num_rels = len(graph_document.relationships)
+        logger_visualizer.info(f"Visualizing graph: {num_nodes} nodes, {num_rels} relationships")
+        
+        try:
+            result = self.visualizer.visualize(graph_document, output_file, **kwargs)
+            logger_visualizer.info(f"Graph visualization saved to {output_file or 'default location'}")
+            return result
+        except Exception as e:
+            logger_visualizer.error(f"Graph visualization failed: {str(e)}", exc_info=True)
+            raise
     
     def visualize_all(
         self,
@@ -242,18 +276,27 @@ def generate_knowledge_graph(
         ...     output_file="marie_curie.html"
         ... )
     """
-    generator = KnowledgeGraphGenerator(**kwargs)
-    graphs = generator.generate_sync(text)
+    logger_app.info("Starting knowledge graph generation workflow")
     
-    if visualize and graphs:
-        for i, graph in enumerate(graphs):
-            if output_file and i == 0:
-                file_path = output_file
-            else:
-                file_path = None
-            generator.visualize(graph, file_path)
-    
-    return graphs
+    try:
+        generator = KnowledgeGraphGenerator(**kwargs)
+        graphs = generator.generate_sync(text)
+        
+        logger_app.info(f"Successfully generated {len(graphs)} graph document(s)")
+        
+        if visualize and graphs:
+            logger_app.info(f"Creating visualizations for {len(graphs)} graph(s)")
+            for i, graph in enumerate(graphs):
+                if output_file and i == 0:
+                    file_path = output_file
+                else:
+                    file_path = None
+                generator.visualize(graph, file_path)
+        
+        return graphs
+    except Exception as e:
+        logger_app.error(f"Knowledge graph generation workflow failed: {str(e)}", exc_info=True)
+        raise
 
 
 if __name__ == "__main__":
@@ -262,17 +305,20 @@ if __name__ == "__main__":
     Marie Curie, born Maria Salomea Skłodowska on 7 November 1867, was a Polish and naturalised-French physicist and chemist who conducted pioneering research on radioactivity. She was the first woman to win a Nobel Prize, the first person to win a Nobel Prize twice, and the only person to win a Nobel Prize in two scientific fields. Her husband, Pierre Curie, was a co-winner of her first Nobel Prize.
     """
     
-    print("Generating knowledge graph...")
-    graphs = generate_knowledge_graph(
-        sample_text,
-        output_file="output/sample_graph.html"
-    )
+    logger_app.info("Running example usage in __main__")
     
-    print(f"\nGenerated {len(graphs)} graph document(s)")
-    
-    if graphs:
-        generator = KnowledgeGraphGenerator()
-        print(generator.display(graphs[0]))
+    try:
+        graphs = generate_knowledge_graph(
+            sample_text,
+            output_file="output/sample_graph.html"
+        )
         
-        stats = generator.get_stats(graphs)
-        print(f"\nStats: {stats}")
+        if graphs:
+            generator = KnowledgeGraphGenerator()
+            print(generator.display(graphs[0]))
+            
+            stats = generator.get_stats(graphs)
+            logger_app.info(f"Final stats: {stats}")
+    except Exception as e:
+        logger_app.error(f"Example usage failed: {str(e)}", exc_info=True)
+        raise

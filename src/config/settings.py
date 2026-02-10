@@ -77,6 +77,17 @@ class Settings:
             "model": cls.DEFAULT_LLM_MODEL,
             "temperature": cls.DEFAULT_TEMPERATURE,
         }
+    
+    @classmethod
+    def get_chunk_config(cls) -> dict:
+        """Get chunking configuration as a dictionary.
+        
+        Note: These are defaults. Use sidebar values in UI for runtime configuration.
+        """
+        return {
+            "chunk_size": cls.DEFAULT_CHUNK_SIZE,
+            "chunk_overlap": cls.DEFAULT_CHUNK_OVERLAP,
+        }
 
 
 # Global settings instance

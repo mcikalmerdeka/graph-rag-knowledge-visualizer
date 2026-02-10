@@ -11,6 +11,7 @@ from langchain_core.messages import SystemMessage, HumanMessage
 
 from src.models.graph_models import GraphDocument, Node, Relationship
 from src.config.settings import settings
+from src.config.logging_config import logger_rag
 
 
 class GraphRAG:
@@ -324,16 +325,21 @@ class GraphRAG:
         Returns:
             Dictionary with answer, context, and metadata
         """
+        logger_rag.info(f"Processing RAG query: '{question}'")
+        
         # Extract relevant context
         context = self.get_subgraph_context(question)
         
         if not context["nodes"]:
+            logger_rag.warning(f"No relevant context found for query: '{question}'")
             return {
                 "answer": "I don't have enough information in the knowledge graph to answer this question. The graph may not contain relevant entities or relationships.",
                 "context": None,
                 "confidence": 0.0,
                 "sources": [],
             }
+        
+        logger_rag.debug(f"Found {len(context['nodes'])} relevant nodes, {len(context['relationships'])} relationships")
         
         # Format context
         context_text = self.format_context_for_llm(context)
@@ -363,11 +369,14 @@ Please provide a concise answer based on the knowledge graph context above."""
                 HumanMessage(content=user_prompt),
             ]
             
+            logger_rag.debug("Sending request to LLM for answer generation")
             response = self.llm.invoke(messages)
             answer = response.content
             
             # Calculate confidence based on context coverage
             confidence = self._calculate_confidence(question, context)
+            
+            logger_rag.info(f"RAG query completed with confidence={confidence:.2f}")
             
             return {
                 "answer": answer,
@@ -378,6 +387,7 @@ Please provide a concise answer based on the knowledge graph context above."""
             }
             
         except Exception as e:
+            logger_rag.error(f"Error generating RAG answer: {str(e)}", exc_info=True)
             return {
                 "answer": f"Error generating answer: {str(e)}",
                 "context": context,

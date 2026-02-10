@@ -6,6 +6,7 @@ from typing import List, Optional, Union
 from pyvis.network import Network
 
 from src.config.settings import settings
+from src.config.logging_config import logger_visualizer
 from src.models.graph_models import GraphDocument, Node, Relationship
 from src.exceptions.custom_exceptions import VisualizationError
 
@@ -109,6 +110,10 @@ class GraphVisualizer:
         Raises:
             VisualizationError: If visualization fails
         """
+        num_nodes = len(graph_document.nodes)
+        num_rels = len(graph_document.relationships)
+        logger_visualizer.info(f"Creating visualization: {num_nodes} nodes, {num_rels} relationships")
+        
         try:
             # Create network
             net = self.create_network()
@@ -132,10 +137,14 @@ class GraphVisualizer:
             # If filtering isolated nodes, only include connected nodes
             if filter_isolated_nodes:
                 nodes_to_add = valid_node_ids
+                isolated_count = len(nodes) - len(valid_node_ids)
+                if isolated_count > 0:
+                    logger_visualizer.debug(f"Filtered out {isolated_count} isolated nodes")
             else:
                 nodes_to_add = set(node_dict.keys())
             
             # Add nodes to the graph
+            added_nodes = 0
             for node_id in nodes_to_add:
                 node = node_dict[node_id]
                 try:
@@ -151,12 +160,14 @@ class GraphVisualizer:
                         title=title,
                         group=node.type,
                     )
+                    added_nodes += 1
                 except Exception as e:
                     # Log error but continue with other nodes
-                    print(f"Warning: Could not add node {node_id}: {e}")
+                    logger_visualizer.warning(f"Could not add node {node_id}: {e}")
                     continue
             
             # Add edges to the graph
+            added_edges = 0
             for rel in valid_edges:
                 try:
                     # Create label with type and properties
@@ -172,10 +183,13 @@ class GraphVisualizer:
                         label=label,
                         title=title,
                     )
+                    added_edges += 1
                 except Exception as e:
                     # Log error but continue with other edges
-                    print(f"Warning: Could not add edge {rel.source.id} -> {rel.target.id}: {e}")
+                    logger_visualizer.warning(f"Could not add edge {rel.source.id} -> {rel.target.id}: {e}")
                     continue
+            
+            logger_visualizer.debug(f"Added {added_nodes} nodes and {added_edges} edges to visualization")
             
             # Save the graph
             if output_file is None:
@@ -187,13 +201,15 @@ class GraphVisualizer:
             
             try:
                 net.save_graph(str(output_file))
-                print(f"Graph saved to {output_file}")
+                logger_visualizer.info(f"Graph visualization saved to {output_file}")
             except Exception as e:
+                logger_visualizer.error(f"Failed to save graph visualization: {str(e)}")
                 raise VisualizationError(f"Failed to save graph: {str(e)}")
             
             return net
             
         except Exception as e:
+            logger_visualizer.error(f"Graph visualization failed: {str(e)}", exc_info=True)
             raise VisualizationError(f"Visualization failed: {str(e)}")
     
     def visualize_batch(

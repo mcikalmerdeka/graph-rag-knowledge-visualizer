@@ -8,6 +8,7 @@ from langchain_openai import ChatOpenAI
 from langchain_experimental.graph_transformers import LLMGraphTransformer
 
 from src.config.settings import settings
+from src.config.logging_config import logger_transformer
 from src.models.graph_models import GraphDocument, Node, Relationship, GraphSchema
 from src.exceptions.custom_exceptions import (
     ConfigurationError,
@@ -54,10 +55,14 @@ class GraphTransformer:
         Raises:
             ConfigurationError: If OpenAI API key is not configured
         """
+        logger_transformer.info(f"Initializing GraphTransformer with model={model or settings.DEFAULT_LLM_MODEL}")
+        
         # Validate configuration
         try:
             settings.validate()
+            logger_transformer.debug("Settings validation passed")
         except ValueError as e:
+            logger_transformer.error(f"Settings validation failed: {str(e)}")
             raise ConfigurationError(str(e))
         
         # Initialize LLM
@@ -70,12 +75,17 @@ class GraphTransformer:
                 model_name=self.model_name,
                 api_key=settings.OPENAI_API_KEY,
             )
+            logger_transformer.debug(f"LLM initialized: model={self.model_name}, temperature={self.temperature}")
         except Exception as e:
+            logger_transformer.error(f"Failed to initialize LLM: {str(e)}", exc_info=True)
             raise LLMError(f"Failed to initialize LLM: {str(e)}")
         
         # Store schema
         self.schema = schema
         self.ignore_tool_usage = ignore_tool_usage
+        
+        if self.schema:
+            logger_transformer.info("Using custom graph schema for extraction")
         
         # Initialize transformer (will be created on first use)
         self._transformer: Optional[LLMGraphTransformer] = None
@@ -121,6 +131,9 @@ class GraphTransformer:
         if isinstance(texts, str):
             texts = [texts]
         
+        num_docs = len(texts)
+        logger_transformer.info(f"Extracting graph from {num_docs} document(s)")
+        
         # Create Document objects
         documents = [Document(page_content=text) for text in texts]
         
@@ -128,12 +141,20 @@ class GraphTransformer:
             transformer = self._get_transformer()
             
             # Use async conversion for better performance
+            logger_transformer.debug("Calling LLMGraphTransformer for extraction")
             graph_documents = await transformer.aconvert_to_graph_documents(documents)
             
             # Convert to our model format
-            return self._convert_to_graph_documents(graph_documents)
+            result = self._convert_to_graph_documents(graph_documents)
+            
+            total_nodes = sum(len(doc.nodes) for doc in result)
+            total_rels = sum(len(doc.relationships) for doc in result)
+            logger_transformer.info(f"Graph extraction successful: {len(result)} document(s), {total_nodes} nodes, {total_rels} relationships")
+            
+            return result
             
         except Exception as e:
+            logger_transformer.error(f"Graph extraction failed: {str(e)}", exc_info=True)
             raise ExtractionError(f"Failed to extract graph: {str(e)}")
     
     def extract_graph_sync(
