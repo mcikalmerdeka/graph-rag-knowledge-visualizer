@@ -13,3 +13,6 @@ temp/
 
 # Opencode config
 .opencode/
+
+# Application logs
+logs/

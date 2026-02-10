@@ -37,6 +37,10 @@ def initialize_session_state():
         st.session_state.text_content = ""
     if 'example_loaded' not in st.session_state:
         st.session_state.example_loaded = False
+    if 'chunk_size' not in st.session_state:
+        st.session_state.chunk_size = 1000  # Default chunk size
+    if 'chunk_overlap' not in st.session_state:
+        st.session_state.chunk_overlap = 200  # Default chunk overlap
 
 
 def get_example_files():
@@ -133,9 +137,19 @@ def render_graph_generation_section():
     if text_content and st.button("🔮 Generate Knowledge Graph", type="primary", use_container_width=True):
         with st.spinner("Extracting knowledge graph using AI... This may take a moment."):
             try:
-                # Generate knowledge graph using the new API
+                # Use chunk settings from session state (sidebar configuration)
+                chunk_size = st.session_state.chunk_size
+                chunk_overlap = st.session_state.chunk_overlap
+                
+                st.info(f"⚙️ Using chunk size: {chunk_size}, overlap: {chunk_overlap}")
+                
+                # Generate knowledge graph using the new API with custom chunk settings
                 generator = KnowledgeGraphGenerator()
-                graphs = generator.generate_sync(text_content)
+                graphs = generator.generate_sync(
+                    text_content,
+                    chunk_size=chunk_size,
+                    chunk_overlap=chunk_overlap
+                )
                 
                 if graphs:
                     # Create visualizer and generate HTML
@@ -271,8 +285,40 @@ def main():
     # Initialize session state
     initialize_session_state()
     
-    # Sidebar - Example Files
+    # Sidebar - Configuration & Example Files
     with st.sidebar:
+        st.header("⚙️ Configuration")
+        
+        # Chunk Configuration Section
+        with st.expander("📝 Text Chunking Settings", expanded=False):
+            st.markdown("Configure how text is split for processing.")
+            
+            chunk_size = st.number_input(
+                "Chunk Size",
+                min_value=100,
+                max_value=5000,
+                value=st.session_state.chunk_size,
+                step=100,
+                help="Number of characters per chunk. Larger chunks process more context but may exceed token limits."
+            )
+            
+            chunk_overlap = st.number_input(
+                "Chunk Overlap",
+                min_value=0,
+                max_value=500,
+                value=st.session_state.chunk_overlap,
+                step=50,
+                help="Number of characters to overlap between chunks. Helps maintain context across chunk boundaries."
+            )
+            
+            # Update session state with new values
+            st.session_state.chunk_size = chunk_size
+            st.session_state.chunk_overlap = chunk_overlap
+            
+            st.info(f"📊 Current: {chunk_size} chars/chunk, {chunk_overlap} overlap")
+        
+        st.markdown("---")
+        
         st.header("📚 Example Files")
         st.markdown("Select an example to auto-fill the text area.")
         
