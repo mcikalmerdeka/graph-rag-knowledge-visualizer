@@ -29,3 +29,8 @@ class VisualizationError(KnowledgeGraphError):
 class LLMError(KnowledgeGraphError):
     """Raised when LLM processing fails."""
     pass
+
+
+class DatabaseError(KnowledgeGraphError):
+    """Raised when database operations fail."""
+    pass

@@ -17,6 +17,7 @@ _Interactive knowledge graph visualization with AI-powered Q&A capabilities_
 - **Multiple Input Methods**: Support for file upload (.txt), direct text input, and example data
 - **Customizable Schemas**: Define allowed node types and relationship patterns for structured extraction
 - **Async Processing**: High-performance asynchronous text processing with automatic chunking
+- **Neo4j Integration**: Store knowledge graphs in Neo4j database for persistent storage and querying
 
 ### Graph RAG (Question Answering)
 
@@ -26,10 +27,18 @@ _Interactive knowledge graph visualization with AI-powered Q&A capabilities_
 - **Confidence Scoring**: See confidence levels for each answer
 - **Source Tracking**: View which entities and relationships contributed to the answer
 
+### Neo4j Database Integration
+
+- **Graph Persistence**: Store extracted knowledge graphs in Neo4j for long-term storage
+- **Cypher Query Support**: Execute Cypher queries against your graph database
+- **Graph Analytics**: Get statistics about your graph (node count, relationship types, etc.)
+- **Optional Storage**: Enable/disable Neo4j storage via sidebar toggle
+
 ## 📋 Requirements
 
-- Python 3.11+
+- Python 3.12+
 - OpenAI API key
+- (Optional) Neo4j database for graph persistence
 - Internet connection for LLM and visualization libraries
 
 ## 🛠️ Installation
@@ -67,10 +76,11 @@ _Interactive knowledge graph visualization with AI-powered Q&A capabilities_
    uv shell
    ```
 
-5. **Set up OpenAI API key**
+5. **Set up environment variables**
 
    ```bash
    echo "OPENAI_API_KEY=your_api_key_here" > .env
+   echo "NEO4J_PASSWORD=neo4j_password" >> .env
    ```
 
 ### Option 2: Traditional pip
@@ -95,15 +105,56 @@ _Interactive knowledge graph visualization with AI-powered Q&A capabilities_
    pip install -e .
    ```
 
-4. **Set up OpenAI API key**
+4. **Set up environment variables**
+
+   ```bash
+   echo "OPENAI_API_KEY=your_api_key_here" > .env
+   echo "NEO4J_PASSWORD=neo4j_password" >> .env
+   ```
+
+### Option 3: Docker Compose (App + Neo4j)
+
+The easiest way to run the full stack with Neo4j database:
+
+1. **Clone and setup**
+
+   ```bash
+   git clone https://github.com/mcikalmerdeka/graph-rag-knowledge-visualizer
+   cd knowledge-graph-visualizer
+   ```
+
+2. **Create .env file**
 
    ```bash
    echo "OPENAI_API_KEY=your_api_key_here" > .env
    ```
 
+3. **Start with Docker Compose**
+
+   ```bash
+   docker-compose up -d
+   ```
+
+   This starts:
+   - Neo4j database on port 7474 (Browser) and 7687 (Bolt)
+   - Streamlit app on port 8501
+
+4. **Access the application**
+
+   - Web App: http://localhost:8501
+   - Neo4j Browser: http://localhost:7474
+   - Neo4j credentials: `neo4j` / `neo4j_password`
+
+5. **Stop the services**
+
+   ```bash
+   docker-compose down
+   ```
+
 ## 📦 Dependencies
 
 - **Core ML**: `langchain`, `langchain-experimental`, `langchain-openai`, `openai`
+- **Database**: `langchain-neo4j`, `neo4j` (for graph persistence)
 - **Visualization**: `pyvis` (interactive graphs), `streamlit` (web interface)
 - **Data Processing**: `numpy`, `pandas`
 - **Utilities**: `python-dotenv`, `networkx`, `scikit-learn`
@@ -269,9 +320,54 @@ Automatic chunking for long documents:
 graphs = generator.generate_sync(
     long_text,
     chunk_size=800,
-    chunk_overlap=150
+     chunk_overlap=150
 )
 ```
+
+## 🗄️ Neo4j Database Setup
+
+### Using Docker (Recommended)
+
+Start a local Neo4j instance with APOC plugins:
+
+**On Windows (PowerShell):**
+```powershell
+docker run --name neo4j-graph-db -p 7474:7474 -p 7687:7687 -d -e NEO4J_AUTH=neo4j/neo4j_password -e 'NEO4J_PLUGINS=[\"apoc\"]' neo4j:latest
+```
+
+**Wait 30-60 seconds** for Neo4j to fully start, then:
+- Neo4j Browser: http://localhost:7474
+- Username: `neo4j`
+- Password: `neo4j_password`
+
+### Environment Configuration
+
+Add these to your `.env` file:
+
+```env
+# Neo4j Database Configuration
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USERNAME=neo4j
+NEO4J_PASSWORD=neo4j_password
+NEO4J_DATABASE=neo4j
+NEO4J_TIMEOUT=30
+```
+
+### Using Neo4j in the App
+
+1. Start Neo4j container (or use Docker Compose)
+2. Run the Streamlit app
+3. In the sidebar, expand "🗄️ Neo4j Database"
+4. Check "Store graphs in Neo4j"
+5. Generate knowledge graphs - they'll be saved to the database
+
+### Neo4j Cloud (Aura)
+
+You can also use [Neo4j Aura](https://neo4j.com/cloud/platform/aura-graph-database/) (free tier available):
+
+1. Create an Aura account and database
+2. Get the connection URI from the Aura console
+3. Update your `.env` file with Aura credentials
 
 ## 📁 Project Structure
 
@@ -281,6 +377,7 @@ knowledge-graph-visualizer/
 │   ├── config/settings.py         # Configuration management
 │   ├── core/                      # Core functionality
 │   │   ├── graph_transformer.py   # LLM graph extraction
+│   │   ├── neo4j_graph.py          # Neo4j database integration
 │   │   ├── visualization.py       # PyVis visualization
 │   │   └── graph_rag.py          # Graph RAG Q&A system
 │   ├── models/graph_models.py    # Data models (Node, Relationship, GraphDocument)
@@ -301,6 +398,8 @@ knowledge-graph-visualizer/
 ├── app.py                        # 🎯 Main entry point - Streamlit web app
 ├── pyproject.toml               # Project configuration
 ├── requirements.txt             # Dependencies
+├── docker-compose.yml           # Docker Compose for app + Neo4j
+├── Dockerfile                   # Docker image for Streamlit app
 ├── .env                         # Environment variables (create this)
 └── README.md                    # This file
 ```
@@ -358,6 +457,18 @@ Tests cover:
 - Process files individually instead of batching
 - Clear output folder periodically
 
+**Neo4j Connection Issues:**
+
+- **"No connection could be made"**: Neo4j container isn't running. Start it with: `docker run --name neo4j-graph-db -p 7474:7474 -p 7687:7687 -d -e NEO4J_AUTH=neo4j/neo4j_password -e 'NEO4J_PLUGINS=[\"apoc\"]' neo4j:latest`
+- **"Could not use APOC procedures"**: APOC plugin failed to load. Stop and restart the container.
+- **"Failed to connect to Neo4j"**: Check that your `.env` file has correct credentials matching the Docker container
+- Wait 30-60 seconds after starting Neo4j for it to fully initialize before running the app
+
+**Docker Issues:**
+
+- **"docker: command not found"**: Install Docker Desktop from https://www.docker.com/products/docker-desktop
+- **Port already in use**: Stop existing containers using ports 7474, 7687, or 8501 with `docker stop <container_name>`
+
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -375,6 +486,7 @@ This project is open source and available under the MIT License.
 
 - **LangChain** for the graph transformation framework
 - **OpenAI** for the GPT models powering extraction and Q&A
+- **Neo4j** for the graph database technology
 - **PyVis** for the interactive visualization engine
 - **Streamlit** for the web application framework
 - **NetworkX** for graph analysis and traversal

@@ -10,10 +10,12 @@ from langchain_experimental.graph_transformers import LLMGraphTransformer
 from src.config.settings import settings
 from src.config.logging_config import logger_transformer
 from src.models.graph_models import GraphDocument, Node, Relationship, GraphSchema
+from src.core.neo4j_graph import Neo4jGraphClient
 from src.exceptions.custom_exceptions import (
     ConfigurationError,
     ExtractionError,
     LLMError,
+    DatabaseError,
 )
 
 
@@ -89,6 +91,9 @@ class GraphTransformer:
         
         # Initialize transformer (will be created on first use)
         self._transformer: Optional[LLMGraphTransformer] = None
+        
+        # Initialize Neo4j client (lazy initialization)
+        self._neo4j_client: Optional[Neo4jGraphClient] = None
     
     def _get_transformer(self) -> LLMGraphTransformer:
         """Get or create the LLMGraphTransformer instance."""
@@ -267,3 +272,87 @@ class GraphTransformer:
             "node_types": sorted(list(node_types)),
             "relationship_types": sorted(list(rel_types)),
         }
+    
+    def _get_neo4j_client(self) -> Neo4jGraphClient:
+        """Get or create the Neo4jGraphClient instance."""
+        if self._neo4j_client is None:
+            logger_transformer.debug("Initializing Neo4jGraphClient")
+            self._neo4j_client = Neo4jGraphClient()
+        return self._neo4j_client
+    
+    async def store_in_neo4j(
+        self,
+        graph_documents: List[GraphDocument],
+        include_source: bool = False,
+    ) -> None:
+        """Store graph documents in Neo4j database.
+        
+        Args:
+            graph_documents: List of GraphDocument objects to store
+            include_source: Whether to include source document text in the graph
+        
+        Raises:
+            DatabaseError: If storage fails
+        """
+        logger_transformer.info(f"Storing {len(graph_documents)} graph document(s) in Neo4j")
+        
+        try:
+            client = self._get_neo4j_client()
+            client.add_graph_documents(
+                graph_documents,
+                include_source=include_source,
+            )
+            logger_transformer.info("Successfully stored graph documents in Neo4j")
+        except Exception as e:
+            logger_transformer.error(f"Failed to store graph in Neo4j: {str(e)}", exc_info=True)
+            raise
+    
+    def store_in_neo4j_sync(
+        self,
+        graph_documents: List[GraphDocument],
+        include_source: bool = False,
+    ) -> None:
+        """Synchronous version of store_in_neo4j.
+        
+        Args:
+            graph_documents: List of GraphDocument objects to store
+            include_source: Whether to include source document text in the graph
+        """
+        return asyncio.run(self.store_in_neo4j(graph_documents, include_source))
+    
+    def query_neo4j(self, cypher_query: str, params: Optional[dict] = None) -> List[dict]:
+        """Execute a Cypher query against Neo4j.
+        
+        Args:
+            cypher_query: The Cypher query to execute
+            params: Optional parameters for the query
+        
+        Returns:
+            List of dictionaries containing query results
+        """
+        try:
+            client = self._get_neo4j_client()
+            return client.query(cypher_query, params)
+        except Exception as e:
+            logger_transformer.error(f"Neo4j query failed: {str(e)}", exc_info=True)
+            raise
+    
+    def get_neo4j_stats(self) -> dict:
+        """Get statistics about the Neo4j graph.
+        
+        Returns:
+            Dictionary with graph statistics
+        """
+        try:
+            client = self._get_neo4j_client()
+            return client.get_stats()
+        except Exception as e:
+            logger_transformer.error(f"Failed to get Neo4j stats: {str(e)}", exc_info=True)
+            raise
+    
+    def close_neo4j(self) -> None:
+        """Close the Neo4j connection."""
+        if self._neo4j_client is not None:
+            self._neo4j_client.close()
+            self._neo4j_client = None
+            logger_transformer.info("Neo4j connection closed")

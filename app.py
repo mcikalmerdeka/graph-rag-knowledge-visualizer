@@ -16,6 +16,7 @@ import string
 from src.main import KnowledgeGraphGenerator
 from src.core.visualization import GraphVisualizer
 from src.core.graph_rag import GraphRAG, create_graph_rag
+from src.config.settings import settings
 
 
 def generate_random_hash(length=4):
@@ -41,6 +42,15 @@ def initialize_session_state():
         st.session_state.chunk_size = 1000  # Default chunk size
     if 'chunk_overlap' not in st.session_state:
         st.session_state.chunk_overlap = 200  # Default chunk overlap
+    if 'neo4j_enabled' not in st.session_state:
+        st.session_state.neo4j_enabled = False
+    if 'neo4j_configured' not in st.session_state:
+        # Check if Neo4j is configured
+        try:
+            settings.validate_neo4j()
+            st.session_state.neo4j_configured = True
+        except ValueError:
+            st.session_state.neo4j_configured = False
 
 
 def get_example_files():
@@ -169,6 +179,15 @@ def render_graph_generation_section():
                     st.session_state.graph_rag = create_graph_rag(graphs[0])
                     st.session_state.graph_html_path = str(output_file)
                     st.session_state.graph_generated = True
+                    
+                    # Store in Neo4j if enabled
+                    if st.session_state.neo4j_enabled and st.session_state.neo4j_configured:
+                        try:
+                            with st.spinner("💾 Storing graph in Neo4j..."):
+                                generator.store_in_neo4j(graphs, include_source=True)
+                                st.success("✅ Graph stored in Neo4j database")
+                        except Exception as e:
+                            st.error(f"⚠️ Failed to store in Neo4j: {str(e)}")
                     
                     # Get stats
                     stats = generator.get_stats(graphs)
@@ -317,6 +336,35 @@ def main():
             
             st.info(f"📊 Current: {chunk_size} chars/chunk, {chunk_overlap} overlap")
         
+        # Neo4j Configuration Section
+        with st.expander("🗄️ Neo4j Database", expanded=False):
+            if st.session_state.neo4j_configured:
+                st.success("✅ Neo4j configured")
+                
+                # Toggle to enable/disable Neo4j storage
+                neo4j_enabled = st.checkbox(
+                    "Store graphs in Neo4j",
+                    value=st.session_state.neo4j_enabled,
+                    help="When enabled, generated graphs will be stored in the Neo4j database"
+                )
+                st.session_state.neo4j_enabled = neo4j_enabled
+                
+                # Show connection details
+                st.write("**Connection:**")
+                st.write(f"  URI: `{settings.NEO4J_URI}`")
+                st.write(f"  Database: `{settings.NEO4J_DATABASE}`")
+                
+            else:
+                st.error("⚠️ Neo4j not configured")
+                st.info("""
+                    To enable Neo4j storage, set these environment variables:
+                    ```
+                    NEO4J_URI=bolt://localhost:7687
+                    NEO4J_USERNAME=neo4j
+                    NEO4J_PASSWORD=your_password
+                    ```
+                """)
+        
         st.markdown("---")
         
         st.header("📚 Example Files")
@@ -385,7 +433,7 @@ def main():
     st.markdown("---")
     st.markdown("""
     <div style='text-align: center; color: #666;'>
-        Built with LangChain + NetworkX + OpenAI + PyVis
+        Built with LangChain + Neo4j + NetworkX + OpenAI + PyVis
     </div>
     """, unsafe_allow_html=True)
 

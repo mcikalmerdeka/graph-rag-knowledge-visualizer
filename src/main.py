@@ -9,11 +9,14 @@ Usage:
     generator = KnowledgeGraphGenerator()
     graph = generator.generate("Your text here")
     generator.visualize(graph)
+    
+    # Store in Neo4j
+    generator.store_in_neo4j(graph)
 """
 
 import asyncio
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Dict, Any
 
 # Initialize logging at module import
 from src.config.logging_config import setup_logger, logger_app, logger_transformer, logger_rag, logger_visualizer
@@ -22,6 +25,7 @@ setup_logger()
 from src.config.settings import settings
 from src.core.graph_transformer import GraphTransformer
 from src.core.visualization import GraphVisualizer
+from src.core.neo4j_graph import Neo4jGraphClient
 from src.models.graph_models import GraphDocument, GraphSchema
 from src.utils.helpers import (
     chunk_text,
@@ -248,6 +252,82 @@ class KnowledgeGraphGenerator:
             Dictionary with statistics
         """
         return self.transformer.get_stats(graph_documents)
+    
+    def store_in_neo4j(
+        self,
+        graph_documents: List[GraphDocument],
+        include_source: bool = False,
+    ) -> None:
+        """Store graph documents in Neo4j database.
+        
+        Args:
+            graph_documents: List of GraphDocuments to store
+            include_source: Whether to include source document text in the graph
+        
+        Example:
+            >>> generator = KnowledgeGraphGenerator()
+            >>> graphs = generator.generate_sync("Your text here")
+            >>> generator.store_in_neo4j(graphs, include_source=True)
+        """
+        logger_app.info(f"Storing {len(graph_documents)} graph(s) in Neo4j")
+        
+        try:
+            self.transformer.store_in_neo4j_sync(
+                graph_documents,
+                include_source=include_source,
+            )
+            logger_app.info("Graphs successfully stored in Neo4j")
+        except Exception as e:
+            logger_app.error(f"Failed to store graphs in Neo4j: {str(e)}", exc_info=True)
+            raise
+    
+    def query_neo4j(self, cypher_query: str, params: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+        """Execute a Cypher query against the Neo4j database.
+        
+        Args:
+            cypher_query: The Cypher query to execute
+            params: Optional parameters for the query
+        
+        Returns:
+            List of dictionaries containing query results
+        
+        Example:
+            >>> results = generator.query_neo4j("MATCH (n:Person) RETURN n.name LIMIT 5")
+            >>> print(results)
+        """
+        logger_app.debug(f"Executing Neo4j query: {cypher_query[:100]}...")
+        
+        try:
+            results = self.transformer.query_neo4j(cypher_query, params)
+            logger_app.info(f"Query returned {len(results)} results")
+            return results
+        except Exception as e:
+            logger_app.error(f"Neo4j query failed: {str(e)}", exc_info=True)
+            raise
+    
+    def get_neo4j_stats(self) -> Dict[str, Any]:
+        """Get statistics about the Neo4j graph.
+        
+        Returns:
+            Dictionary with graph statistics including node count, 
+            relationship count, node labels, and relationship types.
+        """
+        try:
+            stats = self.transformer.get_neo4j_stats()
+            logger_app.info(f"Neo4j stats: {stats['node_count']} nodes, {stats['relationship_count']} relationships")
+            return stats
+        except Exception as e:
+            logger_app.error(f"Failed to get Neo4j stats: {str(e)}", exc_info=True)
+            raise
+    
+    def close(self) -> None:
+        """Close resources and connections.
+        
+        This should be called when you're done using the generator to ensure
+        all connections are properly closed.
+        """
+        logger_app.info("Closing KnowledgeGraphGenerator resources")
+        self.transformer.close_neo4j()
 
 
 # Convenience function for quick usage
@@ -308,17 +388,41 @@ if __name__ == "__main__":
     logger_app.info("Running example usage in __main__")
     
     try:
-        graphs = generate_knowledge_graph(
-            sample_text,
-            output_file="output/sample_graph.html"
-        )
+        generator = KnowledgeGraphGenerator()
+        
+        # Generate graphs from text
+        graphs = generator.generate_sync(sample_text)
+        logger_app.info(f"Generated {len(graphs)} graph document(s)")
         
         if graphs:
-            generator = KnowledgeGraphGenerator()
+            # Display the first graph
             print(generator.display(graphs[0]))
             
+            # Get statistics
             stats = generator.get_stats(graphs)
-            logger_app.info(f"Final stats: {stats}")
+            logger_app.info(f"Graph stats: {stats}")
+            
+            # Create visualization
+            generator.visualize(graphs[0], output_file="output/sample_graph.html")
+            
+            # Store in Neo4j (if configured)
+            try:
+                settings.validate_neo4j()
+                generator.store_in_neo4j(graphs, include_source=True)
+                
+                # Query Neo4j to verify
+                neo4j_stats = generator.get_neo4j_stats()
+                logger_app.info(f"Neo4j graph stats: {neo4j_stats}")
+                
+                # Example query
+                results = generator.query_neo4j("MATCH (n) RETURN n.id, n.type LIMIT 5")
+                logger_app.info(f"Sample nodes from Neo4j: {results}")
+            except ValueError:
+                logger_app.warning("Neo4j not configured, skipping database storage")
+        
+        # Close resources
+        generator.close()
+        
     except Exception as e:
         logger_app.error(f"Example usage failed: {str(e)}", exc_info=True)
         raise

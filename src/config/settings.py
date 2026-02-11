@@ -47,6 +47,13 @@ class Settings:
     STRICT_MODE = os.getenv("STRICT_MODE", "true").lower() == "true"
     IGNORE_TOOL_USAGE = os.getenv("IGNORE_TOOL_USAGE", "false").lower() == "true"
     
+    # Neo4j Database Configuration
+    NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+    NEO4J_USERNAME = os.getenv("NEO4J_USERNAME", "neo4j")
+    NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD")
+    NEO4J_DATABASE = os.getenv("NEO4J_DATABASE", "neo4j")
+    NEO4J_TIMEOUT = float(os.getenv("NEO4J_TIMEOUT", "30"))
+    
     # Visualization Settings
     DEFAULT_GRAPH_HEIGHT = "1200px"
     DEFAULT_GRAPH_WIDTH = "100%"
@@ -88,6 +95,26 @@ class Settings:
             "chunk_size": cls.DEFAULT_CHUNK_SIZE,
             "chunk_overlap": cls.DEFAULT_CHUNK_OVERLAP,
         }
+    
+    @classmethod
+    def get_neo4j_config(cls) -> dict:
+        """Get Neo4j configuration as a dictionary."""
+        return {
+            "url": cls.NEO4J_URI,
+            "username": cls.NEO4J_USERNAME,
+            "password": cls.NEO4J_PASSWORD,
+            "database": cls.NEO4J_DATABASE,
+            "timeout": cls.NEO4J_TIMEOUT,
+        }
+    
+    @classmethod
+    def validate_neo4j(cls) -> None:
+        """Validate that required Neo4j settings are configured."""
+        if not cls.NEO4J_PASSWORD:
+            raise ValueError(
+                "NEO4J_PASSWORD not found. Please set it in your .env file "
+                "or as an environment variable."
+            )
 
 
 # Global settings instance
