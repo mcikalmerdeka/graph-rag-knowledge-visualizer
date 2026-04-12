@@ -25,7 +25,6 @@ setup_logger()
 from src.config.settings import settings
 from src.core.graph_transformer import GraphTransformer
 from src.core.visualization import GraphVisualizer
-from src.core.neo4j_graph import Neo4jGraphClient
 from src.models.graph_models import GraphDocument, GraphSchema
 from src.utils.helpers import (
     chunk_text,

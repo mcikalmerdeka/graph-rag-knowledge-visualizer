@@ -16,3 +16,6 @@ temp/
 
 # Application logs
 logs/
+
+# Output files
+output/

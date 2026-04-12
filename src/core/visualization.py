@@ -7,7 +7,7 @@ from pyvis.network import Network
 
 from src.config.settings import settings
 from src.config.logging_config import logger_visualizer
-from src.models.graph_models import GraphDocument, Node, Relationship
+from src.models.graph_models import GraphDocument
 from src.exceptions.custom_exceptions import VisualizationError
 
 

@@ -81,9 +81,3 @@ logger_visualizer = get_logger("visualizer")
 
 # Used for main application lifecycle and orchestration
 logger_app = get_logger("app")
-
-# Used for utility functions and helpers
-logger_utils = get_logger("utils")
-
-# Used for configuration and settings
-logger_config = get_logger("config")

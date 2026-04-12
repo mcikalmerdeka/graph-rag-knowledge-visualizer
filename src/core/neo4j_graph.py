@@ -7,11 +7,10 @@ storing and retrieving knowledge graphs from a Neo4j database.
 from typing import List, Optional, Dict, Any
 
 from langchain_neo4j import Neo4jGraph
-from langchain_core.documents import Document
 
 from src.config.settings import settings
 from src.config.logging_config import logger_transformer
-from src.models.graph_models import GraphDocument, Node, Relationship
+from src.models.graph_models import GraphDocument
 from src.exceptions.custom_exceptions import ConfigurationError, DatabaseError
 
 
